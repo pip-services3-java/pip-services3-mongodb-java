@@ -1,0 +1,7 @@
+/lib
+/obj
+/dist
+/.idea
+/config/config.json
+/data/dummies.json
+settings.xml
