@@ -10,6 +10,34 @@
   <name>Communication components for Pip.Services</name>
   <description>This component library is a part of Pip.Services project. It provides connectors to access databases</description>
   <url>http://www.pipservices.org</url>
+  
+    <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <email>seroukhov@gmail.com</email>
+	  <name>Sergey Seroukhov</name>
+	  <url>https://github.com/seroukhov</url>
+	  <id>seroukhov</id>
+    </developer>
+    <developer>
+      <email>nuzhnykhev@gmail.com</email>
+	  <name>Egor Nuzhnykh</name>
+	  <url>https://github.com/EgorNuzhnykh</url>
+	  <id>EgorNuzhnykh</id>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:pip-services-java/pip-services-mongodb-java.git</connection>
+    <developerConnection>scm:git:git@github.com:pip-services-java/pip-services-mongodb-java.git</developerConnection>
+    <url>https://github.com/pip-services-java/pip-services-mongodb-java</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -50,33 +78,6 @@
         <artifactId>pip-services-commons</artifactId>
         <version>3.0.0-SNAPSHOT</version>
     </dependency>
-<!--
-    <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-server</artifactId>
-        <version>1.9</version>
-    </dependency>
-    <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-client</artifactId>
-        <version>1.9</version>
-    </dependency>
-    <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-json</artifactId>
-        <version>1.9</version>
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.7.2</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>3.4</version>
-    </dependency>
--->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -85,18 +86,8 @@
     </dependency>
 	<dependency>
       <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>2.27</version>
-	</dependency>
-	<dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
       <version>2.27</version>
-	</dependency>
-	<dependency>
-      <groupId>org.elasticsearch</groupId>
-      <artifactId>elasticsearch</artifactId>
-      <version>2.4.0</version>
 	</dependency>
 	<dependency>
       <groupId>org.mongodb</groupId>
