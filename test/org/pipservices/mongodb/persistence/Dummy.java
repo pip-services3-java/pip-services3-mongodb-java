@@ -1,6 +1,6 @@
-package org.pipservices.fixtures;
+package org.pipservices.mongodb.persistence;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
@@ -8,44 +8,55 @@ import org.pipservices.commons.data.IStringIdentifiable;
 
 public class Dummy implements IStringIdentifiable{	
 
-	public Dummy(String id, String key, String content, ZonedDateTime createTimeUtc, InnerDummy innerDummy,
-			List<InnerDummy> innerDummies) {
+	public Dummy() {}
+	
+	public Dummy(String id, String key, String content,
+			Date createTime, InnerDummy innerDummy,
+			List<InnerDummy> innerDummies
+	) {
 		super();
-		this.id = id;
-		this.key = key;
-		this.content = content;
-		this.createTimeUtc = createTimeUtc;
-		this.innerDummy = innerDummy;
-		this.innerDummies = innerDummies;
+		this._id = id;
+		this._key = key;
+		this._content = content;
+		this._createTime = createTime;
+		this._innerDummy = innerDummy;
+		this._innerDummies = innerDummies;
 	}
+	
 
-	@BsonProperty("id")
-	private String id;
-	public String getId() {	return id; }
-	public void setId(String id) {	this.id = id;}
+	@BsonProperty("_id")
+	private String _id;
+	public String getId() {	return _id; }
+	public void setId(String id) {	this._id = id;}
 	
 	@BsonProperty("key")
-	private String key;
-	public String getKey() { return key; }
-	public void setKey(String key) { this.key = key; }
+	private String _key;
+	public String getKey() { return _key; }
+	public void setKey(String key) { this._key = key; }
 
 	@BsonProperty("content")
-	private String content;
-	public String getContent() { return content; }
-	public void setContent(String content) { this.content = content; }
+	private String _content;
+	public String getContent() { return _content; }
+	public void setContent(String content) { this._content = content; }
 
-	@BsonProperty("create_time_utc")
-	private ZonedDateTime createTimeUtc;
-	public ZonedDateTime getCreateTimeUtc() { return createTimeUtc; }
-	public void setCreateTimeUtc(ZonedDateTime createTimeUtc) { this.createTimeUtc = createTimeUtc; }
+	@BsonProperty("create_time")
+	private Date _createTime;
+	public Date getCreateTime() { return _createTime; }
+	public void setCreateTime(Date createTime) { this._createTime = createTime; }
+
+	
+//	@BsonProperty("create_time")
+//	private ZonedDateTime _createTime;
+//	public ZonedDateTime getCreateTime() { return _createTime; }
+//	public void setCreateTime(ZonedDateTime createTime) { this._createTime = createTime; }
 
 	@BsonProperty("inner_dummy")
-	private InnerDummy innerDummy;
-	public InnerDummy getInnerDummy() { return innerDummy; }
-	public void setInnerDummy(InnerDummy innerDummy) { this.innerDummy = innerDummy; }
+	private InnerDummy _innerDummy;
+	public InnerDummy getInnerDummy() { return _innerDummy; }
+	public void setInnerDummy(InnerDummy innerDummy) { this._innerDummy = innerDummy; }
 
 	@BsonProperty("inner_dummies")
-	private List<InnerDummy> innerDummies;
-	public List<InnerDummy> getInnerDummies() { return innerDummies; }
-	public void setInnerDummies(List<InnerDummy> innerDummies) { this.innerDummies = innerDummies; }
+	private List<InnerDummy> _innerDummies;
+	public List<InnerDummy> getInnerDummies() { return _innerDummies; }
+	public void setInnerDummies(List<InnerDummy> innerDummies) { this._innerDummies = innerDummies; }
 }

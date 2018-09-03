@@ -1,4 +1,4 @@
-package org.pipservices.fixtures;
+package org.pipservices.mongodb.persistence;
 
 import java.util.List;
 
@@ -6,6 +6,8 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 
 public class InnerDummy {
 
+	public InnerDummy() {}
+	
 	public InnerDummy(String id, String name, String description) {
 		super();
 		this.id = id;

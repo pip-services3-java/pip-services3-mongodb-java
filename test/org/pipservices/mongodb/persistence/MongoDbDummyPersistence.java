@@ -1,4 +1,4 @@
-package org.pipservices.fixtures;
+package org.pipservices.mongodb.persistence;
 
 import org.bson.conversions.Bson;
 import org.pipservices.commons.data.AnyValueMap;
@@ -6,12 +6,13 @@ import org.pipservices.commons.data.DataPage;
 import org.pipservices.commons.data.FilterParams;
 import org.pipservices.commons.data.PagingParams;
 import org.pipservices.commons.data.SortParams;
-import org.pipservices.mongodb.IdentifiableMongoDbPersistence;
+import org.pipservices.mongodb.persistence.IdentifiableMongoDbPersistence;
 
-public class MongoDbDummyPersistence extends IdentifiableMongoDbPersistence<Dummy, String> implements IDummyPersistence{
+public class MongoDbDummyPersistence extends IdentifiableMongoDbPersistence<Dummy, String>
+	implements IDummyPersistence{
 
 	public MongoDbDummyPersistence() {
-		super("dummies");
+		super("dummies", Dummy.class);
 	}
 
 	@Override

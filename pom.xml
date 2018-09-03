@@ -7,11 +7,11 @@
   <version>3.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>Communication components for Pip.Services</name>
-  <description>This component library is a part of Pip.Services project. It provides connectors to access databases</description>
-  <url>http://www.pipservices.org</url>
+  <name>Pip.Services MongoDb</name>
+  <description>MongoDB persistence for Pip.Services in Java</description>
+  <url>http://www.github.com/pip-services/pip-services</url>
   
-    <licenses>
+  <licenses>
     <license>
       <name>MIT</name>
       <url>https://opensource.org/licenses/MIT</url>
@@ -39,23 +39,6 @@
     <url>https://github.com/pip-services-java/pip-services-mongodb-java</url>
   </scm>
 
- <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>9</version>
-  </parent>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -78,46 +61,34 @@
     <directory>${basedir}/lib</directory>
     <finalName>${project.artifactId}-${project.version}</finalName>
 
-<plugins>
+    <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-        </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+          <configuration>
+              <source>1.8</source>
+              <target>1.8</target>
+          </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.10</version>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/lib</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>false</overWriteSnapshots>
-              <overWriteIfNewer>true</overWriteIfNewer>
-            </configuration>
-          </execution>
-        </executions>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.3</version>
+          <configuration>
+              <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+          </configuration>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>single</goal>
+                  </goals>
+              </execution>
+          </executions>
       </plugin>
       <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.3</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
-      </plugin>
-<plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>2.1.2</version>
@@ -133,12 +104,28 @@
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.3</version>
+          <version>3.0.0</version>
           <configuration>
-              <outputDirectory>${basedir}/doc</outputDirectory>
               <reportOutputDirectory>${basedir}/doc</reportOutputDirectory>
               <destDir>api</destDir>
+<!--
+              <quiet>true</quiet>
+              <nonavbar>true</nonavbar>
+              <notree>true</notree>
+              <nocomment>true</nocomment>
+              <nohelp>true</nohelp>
+-->
           </configuration>
+<!--
+          <executions>
+              <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                      <goal>jar</goal>
+                  </goals>
+              </execution>
+          </executions>
+-->
       </plugin>
       <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -154,8 +141,29 @@
               </execution>
           </executions>
       </plugin>
-    </plugins>
+      </plugins>
   </build>
+
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+
+  <distributionManagement>
+    <!-- Repository for snapshots -->
+    <snapshotRepository>
+        <id>sonatype-nexus-snapshots</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <!-- Repository for releases -->
+    <repository>
+        <id>nexus-releases</id>
+        <name>Nexus Release Repository</name>
+        <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <dependencies>
     <dependency>
@@ -164,20 +172,36 @@
         <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
+        <groupId>org.pipservices</groupId>
+        <artifactId>pip-services-components</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.pipservices</groupId>
+        <artifactId>pip-services-data</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+  	<dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver</artifactId>
+      <version>3.6.4</version>
+    </dependency>	    
+    <!-- <dependency>
+      <groupId>fr.javatic.mongo</groupId>
+      <artifactId>mongo-jackson-codec</artifactId>
+      <version>3.2.2__0.5</version>
+      <scope>compile</scope>
+    </dependency> -->
+	<!-- <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.27</version>
+	</dependency> -->
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-	<dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-server</artifactId>
-      <version>2.27</version>
-	</dependency>
-	<dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongodb-driver</artifactId>
-      <version>3.6.4</version>
-    </dependency>	    
   </dependencies>
 </project>
