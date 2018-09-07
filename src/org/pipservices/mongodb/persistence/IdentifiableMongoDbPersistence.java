@@ -30,31 +30,44 @@ public class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
 		_maxPageSize = config.getAsIntegerWithDefault("options.max_page_size", _maxPageSize);
 	}
 
-	protected DataPage<T> getPageByFilter(String correlationId, Bson filterDefinition, 
-			PagingParams paging, Bson sortDefinition) {
+	protected DataPage<T> getPageByFilter(String correlationId, FilterParams filterDefinition, 
+			PagingParams paging, SortParams sortDefinition) {
 		
-		FindIterable<T> query = _collection.find(filterDefinition);
+		FindIterable<T> query = _collection.find(composeFilter(filterDefinition));
 		if (sortDefinition != null)
-			query = query.sort(sortDefinition);
+			query = query.sort(composeSort(sortDefinition));
 		paging = paging != null ? paging : new PagingParams();
 		long skip = paging.getSkip(0); 
 		long take = paging.getTake(_maxPageSize);
 		
-		long count = paging.hasTotal() ? _collection.count(filterDefinition) : 0;
+		long count = paging.hasTotal() ? _collection.count(composeFilter(filterDefinition)) : 0;
 		
 		List<T> items = new ArrayList<T>();				
-		query.skip((int)skip).limit((int)take).forEach((Block<? super T>)block -> items.add(block));
+		query.skip((int)skip).limit((int)take).forEach((Block<T>)block -> items.add(block));
+//		for( T item : query.skip((int)skip).limit((int)take) ) {
+//			items.add(item);
+//		}
+//		MongoCursor<T> cursor = query.skip((int)skip).limit((int)take).iterator();
+//	    try {
+//	        while (cursor.hasNext()) {
+//	            T document = cursor.next();
+//	            items.add(document);
+//	        }
+//	    } finally {
+//	        cursor.close();
+//	    }
 
 		_logger.trace(correlationId, "Retrieved %d from %s", items.size(), _collectionName);
 
-		
+		if( count == 0 )
+			return new DataPage<T>(items);
 		return new DataPage<T>(items, count);
 	}
 	
-	protected List<T> getListByFilter(String correlationId, Bson filterDefinition, Bson sortDefinition) {
-		FindIterable<T> query = _collection.find(filterDefinition);
+	protected List<T> getListByFilter(String correlationId, FilterParams filterDefinition, SortParams sortDefinition) {
+		FindIterable<T> query = _collection.find(composeFilter(filterDefinition));
 		if (sortDefinition != null)
-			query = query.sort(sortDefinition);
+			query = query.sort((composeSort(sortDefinition)));
 		
 		List<T> items = new ArrayList<T>();				
 		query.forEach((Block<? super T>)block -> items.add(block));
@@ -93,8 +106,8 @@ public class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         return result.first();
 	}
 	
-	public T getOneRandom(String correlationId, Bson filterDefinition) {		
-		int count = (int)_collection.count(filterDefinition);
+	public T getOneRandom(String correlationId, FilterParams filterDefinition) {		
+		int count = (int)_collection.count(composeFilter(filterDefinition));
 
 		if (count <= 0) {
             _logger.trace(correlationId, "Nothing found for filter %s", filterDefinition.toString());
@@ -102,7 +115,7 @@ public class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         }
 
 		int randomIndex = new Random().nextInt(count - 1);
-		FindIterable<T> result = _collection.find(filterDefinition).skip(randomIndex);
+		FindIterable<T> result = _collection.find(composeFilter(filterDefinition)).skip(randomIndex);
 		_logger.trace(correlationId, "Retrieved randomly from %s with id = %s", _collectionName, result.first().getId().toString());
 		
 		return result.first();
@@ -156,31 +169,49 @@ public class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
 	    return result;
 	}
 	
-	protected T modify(String correlationId, Bson filterDefinition, Bson newItem) {
-    	if (filterDefinition == null && newItem == null)
+	//Todo 
+//	protected T modify(String correlationId, Bson filterDefinition, Bson newItem) {
+//    	if (filterDefinition == null && newItem == null)
+//    		return null;    	
+//	
+//    	FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
+//    	options.returnDocument(ReturnDocument.AFTER);
+//    	options.upsert(false);
+//    	
+//    	T result = _collection.findOneAndUpdate(filterDefinition, newItem, options);
+//    	
+//    	_logger.trace(correlationId, "Update in %s", _collectionName);
+//	        
+//	    return result;
+//	}
+	
+	protected T modify(String correlationId, K id, AnyValueMap updateMap) {
+    	if (id == null && updateMap == null)
     		return null;    	
 	
     	FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
     	options.returnDocument(ReturnDocument.AFTER);
     	options.upsert(false);
     	
-    	T result = _collection.findOneAndUpdate(filterDefinition, newItem, options);
+    	T result = _collection.findOneAndUpdate(Filters.eq("_id", id), composeUpdate(updateMap), options);
     	
     	_logger.trace(correlationId, "Update in %s", _collectionName);
 	        
 	    return result;
 	}
 	
-	public T modifyById(String correlationId, K id, Bson newItem) {
-    	if (id == null && newItem == null)
-    		return null;    	
-    	
-    	T result = modify(correlationId, Filters.eq("_id", id), newItem);
-    	
-    	_logger.trace(correlationId, "Modify in %s with id = %s", _collectionName, id.toString());
-	        
-	    return result;
-	}
+	
+	// Todo
+//	public T modifyById(String correlationId, K id, Bson newItem) {
+//    	if (id == null && newItem == null)
+//    		return null;    	
+//    	
+//    	T result = modify(correlationId, Filters.eq("_id", id), newItem);
+//    	
+//    	_logger.trace(correlationId, "Modify in %s with id = %s", _collectionName, id.toString());
+//	        
+//	    return result;
+//	}
 
 	@Override
 	public T deleteById(String correlationId, K id) {
@@ -193,8 +224,8 @@ public class IdentifiableMongoDbPersistence<T extends IIdentifiable<K>, K> exten
         return result;
 	}
 	
-	protected void deleteByFilter(String correlationId, Bson filterDefinition){
-		DeleteResult result = _collection.deleteMany(filterDefinition);
+	protected void deleteByFilter(String correlationId, FilterParams filterDefinition){
+		DeleteResult result = _collection.deleteMany(composeFilter(filterDefinition));
 
         _logger.trace(correlationId, "Deleted %d from %s", result.getDeletedCount(), _collectionName);
 	}

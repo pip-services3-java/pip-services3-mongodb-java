@@ -40,23 +40,29 @@ public class IdentifiableMongoDbPersistenceTest {
     }
 	
 	@Test
-	public void testGetById() {
+	public void testBatchOperations() {
 		if (_fixture != null)
-			_fixture.testGetById();
+			_fixture.testBatchOperations();
     }
 	
-	@Test
-	public void testGetByIdFromArray() {
-		if (_fixture != null)
-			_fixture.testGetByIdFromArray();
-    }
+//	@Test
+//	public void testGetById() {
+//		if (_fixture != null)
+//			_fixture.testGetById();
+//    }
+//	
+//	@Test
+//	public void testGetByIdFromArray() {
+//		if (_fixture != null)
+//			_fixture.testGetByIdFromArray();
+//    }
 	
 //	@Test
 //	public void testGetPageByFilter() {
 //		if (_fixture != null)
 //			_fixture.testGetPageByFilter();
 //    }
-//	
+	
 //	@Test
 //	public void testModifyExistingPropertiesBySelectedFields() {
 //		if (_fixture != null)

@@ -1,5 +1,7 @@
 package org.pipservices.mongodb.persistence;
 
+import java.util.List;
+
 import org.bson.conversions.Bson;
 import org.pipservices.commons.data.AnyValueMap;
 import org.pipservices.commons.data.DataPage;
@@ -17,38 +19,63 @@ public class MongoDbDummyPersistence extends IdentifiableMongoDbPersistence<Dumm
 
 	@Override
 	public Dummy сreate(String correlationId, Dummy item) {
-		return create(correlationId, item); 
+		return super.create(correlationId, item); 
 	}
 
 	@Override
 	public void clear() {
-		clear();		
+		super.clear(null);		
 	}
 
-	public Dummy delete(String correlationId, String id) {
-        return deleteById(correlationId, id);
+	public Dummy deleteById(String correlationId, String id) {
+        return super.deleteById(correlationId, id);
     }
-
-    public DataPage<Dummy> getByFilter(String correlationId, FilterParams filter, PagingParams paging, SortParams sort) {
-        return getPageByFilter(correlationId, composeFilter(filter), paging, composeSort(sort));
+	
+    public void deleteByFilter(String correlationId, FilterParams filterDefinition) {
+    	super.deleteByFilter(correlationId, filterDefinition);
+	}
+    
+    public void deleteByIds(String correlationId, String[] ids) {
+    	super.deleteByIds(correlationId, ids);
     }
-
-    public Dummy getById(String correlationId, String id) {
-        return getOneById(correlationId, id);
-    }
-
-	@Override
-	public Dummy modify(String correlationId, Bson filterDefinition, Bson item) {
-		return modify(correlationId, filterDefinition, item);
+    
+    public List<Dummy> getListByFilter(String correlationId, FilterParams filterDefinition, SortParams sortDefinition) {
+		return super.getListByFilter(correlationId, filterDefinition, sortDefinition);
+	}
+    public List<Dummy> getListByIds(String correlationId, String[] ids) {
+		return super.getListByIds(correlationId, ids);
+	}
+    public Dummy getOneRandom(String correlationId, FilterParams filterDefinition) {
+		return super.getOneRandom(correlationId, filterDefinition);
+	}
+    public Dummy set(String correlationId, Dummy item) {
+		return super.set(correlationId, item);
+	}
+    public Dummy update(String correlationId, Dummy item) {
+		return super.update(correlationId, item);
 	}
 
-	@Override
-	public Dummy modifyById(String correlationId, String id, Bson item) {
-		return modifyById(correlationId, id, item);
-	}
+    
+    public DataPage<Dummy> getPageByFilter(String correlationId, FilterParams filter, PagingParams paging, SortParams sort) {
+        return super.getPageByFilter(correlationId, filter, paging, sort);
+    }
+
+    public Dummy getOneById(String correlationId, String id) {
+        return super.getOneById(correlationId, id);
+    }
+
+//	@Override
+//	public Dummy modify(String correlationId, Bson filterDefinition, Bson item) {
+//		return modify(correlationId, filterDefinition, item);
+//	}
+//
+//	@Override
+//	public Dummy modifyById(String correlationId, String id, Bson item) {
+//		return modifyById(correlationId, id, item);
+//	}
 
 	@Override
 	public Dummy modify(String correlationId, String id, AnyValueMap updateMap) {
-		return modifyById(correlationId, id, composeUpdate(updateMap));
+		return super.modify(correlationId, id, updateMap);
 	}
 }

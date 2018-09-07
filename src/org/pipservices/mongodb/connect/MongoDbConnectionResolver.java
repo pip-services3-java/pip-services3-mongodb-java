@@ -5,13 +5,15 @@ import java.util.*;
 import org.pipservices.components.auth.CredentialParams;
 import org.pipservices.components.auth.CredentialResolver;
 import org.pipservices.commons.config.ConfigParams;
+import org.pipservices.commons.config.IConfigurable;
 import org.pipservices.components.connect.ConnectionParams;
 import org.pipservices.components.connect.ConnectionResolver;
 import org.pipservices.commons.errors.ApplicationException;
 import org.pipservices.commons.errors.ConfigException;
+import org.pipservices.commons.refer.IReferenceable;
 import org.pipservices.commons.refer.IReferences;
 
-public class MongoDbConnectionResolver {
+public class MongoDbConnectionResolver implements IReferenceable, IConfigurable {
 	
 	protected ConnectionResolver _connectionResolver = new ConnectionResolver();
     protected CredentialResolver _credentialResolver = new CredentialResolver();

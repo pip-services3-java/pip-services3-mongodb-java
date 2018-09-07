@@ -107,7 +107,7 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
     
     
 	@Override
-	public void close(String correlationId) throws ApplicationException {
+	public void close(String correlationId) {
 		if (_connection != null) {
 			_connection.close();
 			
@@ -118,7 +118,7 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
 	}
 
 	@Override
-	public void clear(String correlationId) throws ApplicationException {
+	public void clear(String correlationId) {
 		_collection.drop();
 		
 	}

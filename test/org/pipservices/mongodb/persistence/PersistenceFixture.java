@@ -16,8 +16,10 @@ import org.bson.conversions.Bson;
 import org.pipservices.commons.data.AnyValueMap;
 import org.pipservices.commons.data.DataPage;
 import org.pipservices.commons.data.FilterParams;
+import org.pipservices.commons.data.PagingParams;
 import org.pipservices.commons.data.SortField;
 import org.pipservices.commons.data.SortParams;
+import org.pipservices.commons.errors.ApplicationException;
 
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -70,6 +72,12 @@ public class PersistenceFixture {
         assertNotNull(dummy2.getId());
         assertEquals(_dummy2.getKey(), dummy2.getKey());
         assertEquals(_dummy2.getContent(), dummy2.getContent());
+        
+//        // Get page by filter
+//        DataPage<Dummy> page = _persistence.getPageByFilter(null, null, null, null);
+//        assertNotNull(page);
+//        assertEquals(2, page.getData().size());
+        
 
         // Update the dummy
         dummy1.setContent("Updated Content 1");
@@ -79,6 +87,14 @@ public class PersistenceFixture {
         assertEquals(dummy1.getId(), dummy.getId());
         assertEquals(_dummy1.getKey(), dummy.getKey());
         assertEquals(_dummy1.getContent(), dummy.getContent());
+        
+        // Get the dummy by Id
+        Dummy result = _persistence.getOneById(null, dummy.getId());
+
+        // assert
+        assertNotNull(result);
+        assertEquals(dummy.getKey(), result.getKey());
+        assertEquals(dummy.getContent(), result.getContent());
 
         // Delete the dummy
         _persistence.deleteById(null, dummy1.getId());
@@ -88,34 +104,65 @@ public class PersistenceFixture {
         assertNull(dummy);
     }
 	
-	public void testGetById() {
-        // arrange
-        Dummy dummy = _persistence.сreate(null, _dummy1);
-        
-        // act
-        Dummy result = _persistence.getOneById(null, dummy.getId());
+	public void testBatchOperations() {
+    	Dummy dummy1 = _persistence.сreate(null, _dummy1);
 
-        // assert
-        assertNotNull(dummy);
-        assertEquals(dummy.getKey(), result.getKey());
-        assertEquals(dummy.getContent(), result.getContent());
-//        assertEquals(dummy.getInnerDummy().getDescription(), result.getInnerDummy().getDescription());
-//        assertEquals(dummy.getCreateTime().toString(), result.getCreateTime().toString());
+        assertNotNull(dummy1);
+        assertNotNull(dummy1.getId());
+        assertEquals(_dummy1.getKey(), dummy1.getKey());
+        assertEquals(_dummy1.getContent(), dummy1.getContent());
+
+        // Create another dummy
+        Dummy dummy2 = _persistence.сreate("", _dummy2);
+
+        assertNotNull(dummy2);
+        assertNotNull(dummy2.getId());
+        assertEquals(_dummy2.getKey(), dummy2.getKey());
+        assertEquals(_dummy2.getContent(), dummy2.getContent());
+        
+        // Read batch
+        List<Dummy> dummies = _persistence.getListByIds(null, new String[]{dummy1.getId(), dummy2.getId()});
+        assertEquals(2, dummies.size());
+        
+        // Delete batch
+        _persistence.deleteByIds(null, new String[]{dummy1.getId(), dummy2.getId()});
+        
+        // TO DO assert.isNull(err);
+        
+        // Read empty batch
+        dummies = _persistence.getListByIds(null, new String[]{dummy1.getId(), dummy2.getId()});
+        //assertNull(dummies);
+        assertEquals(0, dummies.size());
     }
 	
-	public void testGetByIdFromArray() {
-        // arrange
-        Dummy dummy = _persistence.сreate(null, _dummy1);
-
-        // act
-        Dummy result = _persistence.getOneById(null, dummy.getId());
-
-        // assert
-        assertNotNull(dummy);
-        assertEquals(dummy.getKey(), result.getKey());
-//        assertEquals(dummy.getInnerDummies().get(0).getName(), result.getInnerDummies().get(0).getName());
-//        assertEquals(dummy.getInnerDummies().get(1).getDescription(), result.getInnerDummies().get(1).getDescription());
-    }
+//	public void testGetById() {
+//        // arrange
+//        Dummy dummy = _persistence.сreate(null, _dummy1);
+//        
+//        // act
+//        Dummy result = _persistence.getOneById(null, dummy.getId());
+//
+//        // assert
+//        assertNotNull(dummy);
+//        assertEquals(dummy.getKey(), result.getKey());
+//        assertEquals(dummy.getContent(), result.getContent());
+////        assertEquals(dummy.getInnerDummy().getDescription(), result.getInnerDummy().getDescription());
+////        assertEquals(dummy.getCreateTime().toString(), result.getCreateTime().toString());
+//    }
+	
+//	public void testGetByIdFromArray() {
+//        // arrange
+//        Dummy dummy = _persistence.сreate(null, _dummy1);
+//
+//        // act
+//        Dummy result = _persistence.getOneById(null, dummy.getId());
+//
+//        // assert
+//        assertNotNull(dummy);
+//        assertEquals(dummy.getKey(), result.getKey());
+////        assertEquals(dummy.getInnerDummies().get(0).getName(), result.getInnerDummies().get(0).getName());
+////        assertEquals(dummy.getInnerDummies().get(1).getDescription(), result.getInnerDummies().get(1).getDescription());
+//    }
 	
 //	public void testGetPageByFilter() {
 //        // arrange 
@@ -125,12 +172,14 @@ public class PersistenceFixture {
 //        Bson filter = Filters.text("");
 //
 //        // act
-//        DataPage<Dummy> result = _persistence.getPageByFilter(null, filter, null, null);
-//
+//        DataPage<Dummy> result = _persistence.getPageByFilter(null, null, null, null);
+////        DataPage<Dummy> result = _persistence.getPageByFilter(null, new FilterParams() , 
+////        															new PagingParams(), 
+////        															new SortParams());
 //        // assert
 //        assertNotNull(result);
 //        assertEquals(2, result.getData().size());
-//        assertEquals(dummy1.getContent(), result.getData().get(0).getContent());
+////        assertEquals(dummy1.getContent(), result.getData().get(0).getContent());
 ////        assertEquals(dummy2.getInnerDummy().getDescription(), result.getData().get(1).getInnerDummy().getDescription());
 //    }
 	
@@ -142,7 +191,7 @@ public class PersistenceFixture {
 //        updateMap.put("Content", "Modified Content");
 //        updateMap.put("InnerDummy.Description", "Modified InnerDummy Description");
 //        // act
-//        Dummy result = _persistence.modifyById(null, dummy.getId(), composeUpdate(updateMap));
+//        Dummy result = _persistence.modify(null, dummy.getId(), updateMap);
 //
 //        // assert
 //        assertNotNull(result);
