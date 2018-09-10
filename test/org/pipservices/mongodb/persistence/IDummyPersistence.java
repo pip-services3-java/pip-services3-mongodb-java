@@ -20,9 +20,7 @@ public interface IDummyPersistence {
     Dummy getOneById(String correlationId, String id);
     Dummy getOneRandom(String correlationId, FilterParams filterDefinition);    
     DataPage<Dummy> getPageByFilter(String correlationId, FilterParams filterDefinition, PagingParams paging, SortParams sortDefinition);
-    
-//    Dummy modify(String correlationId, Bson filterDefinition, Bson item);
-//    Dummy modifyById(String correlationId, String id, Bson item);
+
     Dummy modify(String correlationId, String id, AnyValueMap updateMap);
     Dummy set(String correlationId, Dummy item);
     Dummy update(String correlationId, Dummy item);
