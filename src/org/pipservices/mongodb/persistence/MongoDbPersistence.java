@@ -66,12 +66,20 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
     }
 
     
-	@Override
 	public boolean isOpen() {
 		return _collection != null;
 	}
+	
+	protected void checkOpened(String correlationId) throws InvalidStateException {
+		if (!isOpen()) {
+			throw new InvalidStateException(
+				correlationId,
+				"NOT_OPENED",
+				"Operation cannot be performed because the component is closed"
+			);			
+		}
+	}
    
-    @SuppressWarnings("unchecked")
 	public void open(String correlationId) throws ApplicationException {
         String uri = _connectionResolver.resolve(correlationId);
 
@@ -104,10 +112,8 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
             throw new ConnectionException(correlationId, "Connection to mongodb failed", ex.toString());
         }
     }
-    
-    
-	@Override
-	public void close(String correlationId) {
+        
+	public void close(String correlationId) throws ApplicationException {
 		if (_connection != null) {
 			_connection.close();
 			
@@ -118,9 +124,10 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
 	}
 
 	@Override
-	public void clear(String correlationId) {
-		_collection.drop();
+	public void clear(String correlationId) throws ApplicationException {
+		checkOpened(correlationId);
 		
+		_collection.drop();		
 	}
 
 }

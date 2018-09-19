@@ -4,12 +4,12 @@ import org.junit.Test;
 import org.pipservices.commons.config.ConfigParams;
 import org.pipservices.commons.errors.ApplicationException;
 
-public class IdentifiableMongoDbPersistenceTest {
+public class DummyMongoDbPersistenceTest {
 
-	private MongoDbDummyPersistence _persistence;	
+	private DummyMongoDbPersistence _persistence;	
 	private PersistenceFixture _fixture;
 
-	public IdentifiableMongoDbPersistenceTest() throws ApplicationException {
+	public DummyMongoDbPersistenceTest() throws ApplicationException {
         String mongoUri = System.getenv("MONGO_URI");
         String mongoHost = System.getenv("MONGO_HOST") != null ? System.getenv("MONGO_HOST") : "localhost";
         String mongoPort = System.getenv("MONGO_PORT") != null ? System.getenv("MONGO_PORT") : "27017";
@@ -18,7 +18,7 @@ public class IdentifiableMongoDbPersistenceTest {
         if (mongoUri == null && mongoHost == null)
             return;
 
-        _persistence = new MongoDbDummyPersistence();
+        _persistence = new DummyMongoDbPersistence();
         		
         _persistence.configure(ConfigParams.fromTuples(
             "connection.uri", mongoUri,
@@ -34,74 +34,13 @@ public class IdentifiableMongoDbPersistenceTest {
     }
 	
 	@Test
-	public void testCrudOperations() {
-		if (_fixture != null)
-			_fixture.testCrudOperations();
+	public void testCrudOperations() throws ApplicationException {
+		_fixture.testCrudOperations();
     }
 	
 	@Test
-	public void testBatchOperations() {
-		if (_fixture != null)
-			_fixture.testBatchOperations();
+	public void testBatchOperations() throws ApplicationException {
+		_fixture.testBatchOperations();
     }
 	
-//	@Test
-//	public void testGetById() {
-//		if (_fixture != null)
-//			_fixture.testGetById();
-//    }
-//	
-//	@Test
-//	public void testGetByIdFromArray() {
-//		if (_fixture != null)
-//			_fixture.testGetByIdFromArray();
-//    }
-	
-//	@Test
-//	public void testGetPageByFilter() {
-//		if (_fixture != null)
-//			_fixture.testGetPageByFilter();
-//    }
-	
-//	@Test
-//	public void testModifyExistingPropertiesBySelectedFields() {
-//		if (_fixture != null)
-//			_fixture.testModifyExistingPropertiesBySelectedFields();
-//    }
-//	
-//	@Test
-//	public void testModifyNullPropertiesBySelectedFields() {
-//		if (_fixture != null)
-//			_fixture.testModifyNullPropertiesBySelectedFields();
-//    }
-//	
-//	@Test
-//	public void testModifyNestedCollection() {
-//		if (_fixture != null)
-//			_fixture.testModifyNestedCollection();
-//    }
-//	
-//	@Test
-//	public void testSearchWithinNestedCollectionByFilter() {
-//		if (_fixture != null)
-//			_fixture.testSearchWithinNestedCollectionByFilter();
-//    }
-//	
-//	@Test
-//	public void testSearchWithinDeepNestedCollectionByFilter() {
-//		if (_fixture != null)
-//			_fixture.testSearchWithinDeepNestedCollectionByFilter();
-//    }
-//	
-//	@Test
-//	public void testGetPageByIdsFilter() {
-//		if (_fixture != null)
-//			_fixture.testGetPageByIdsFilter();
-//    }
-//	
-//	@Test
-//	public void testGetPageSortedByOneField() {
-//		if (_fixture != null)
-//			_fixture.testGetPageSortedByOneField();
-//    }
 }
