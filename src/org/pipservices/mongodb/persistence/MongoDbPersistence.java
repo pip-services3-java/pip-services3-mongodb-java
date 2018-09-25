@@ -5,6 +5,7 @@ import org.bson.codecs.pojo.*;
 import org.pipservices.commons.config.*;
 import org.pipservices.commons.errors.*;
 import org.pipservices.components.log.*;
+import org.pipservices.mongodb.codecs.*;
 import org.pipservices.mongodb.connect.*;
 import org.pipservices.commons.refer.*;
 import org.pipservices.commons.run.*;
@@ -94,7 +95,15 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
             PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
             //JacksonCodecProvider dateCodecProvider = new JacksonCodecProvider(ObjectMapperFactory.createObjectMapper());            
             CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
+        		// Custom codecs for unsupported types
+        		CodecRegistries.fromCodecs(
+    				new ZonedDateTimeStringCodec(), 
+    				new LocalDateTimeStringCodec(),
+    				new LocalDateStringCodec(),
+    				new DurationInt64Codec()
+				),
         		MongoClient.getDefaultCodecRegistry(),
+        		// POJO codecs to allow object serialization
         		CodecRegistries.fromProviders(pojoCodecProvider)
         		//CodecRegistries.fromProviders(dateCodecProvider)
     		);

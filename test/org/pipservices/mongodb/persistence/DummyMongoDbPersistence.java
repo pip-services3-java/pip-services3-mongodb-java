@@ -3,7 +3,6 @@ package org.pipservices.mongodb.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.*;
 import org.bson.conversions.*;
 import org.pipservices.commons.data.*;
 import org.pipservices.commons.errors.*;
