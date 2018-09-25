@@ -2,6 +2,7 @@ package org.pipservices.mongodb.persistence;
 
 import org.bson.codecs.configuration.*;
 import org.bson.codecs.pojo.*;
+import org.bson.conversions.Bson;
 import org.pipservices.commons.config.*;
 import org.pipservices.commons.errors.*;
 import org.pipservices.components.log.*;
@@ -11,11 +12,90 @@ import org.pipservices.commons.run.*;
 
 import com.mongodb.*;
 import com.mongodb.client.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndReplaceOptions;
+import com.mongodb.client.model.ReturnDocument;
 
-
+/**
+ * Abstract persistence component that stores data in MongoDB
+ * and is based using Mongoose object relational mapping.
+ * 
+ * This is the most basic persistence component that is only
+ * able to store data items of any type. Specific CRUD operations
+ * over the data items must be implemented in child classes by
+ * accessing this._collection or this._model properties.
+ * 
+ * ### Configuration parameters ###
+ * 
+ * collection:                  (optional) MongoDB collection name
+ * connection(s):    
+ *   discovery_key:             (optional) a key to retrieve the connection from IDiscovery
+ *   host:                      host name or IP address
+ *   port:                      port number (default: 27017)
+ *   uri:                       resource URI or connection string with all parameters in it
+ * credential(s):    
+ *   store_key:                 (optional) a key to retrieve the credentials from ICredentialStore
+ *   username:                  (optional) user name
+ *   password:                  (optional) user password
+ * options:
+ *   max_pool_size:             (optional) maximum connection pool size (default: 2)
+ *   keep_alive:                (optional) enable connection keep alive (default: true)
+ *   connect_timeout:           (optional) connection timeout in milliseconds (default: 5 sec)
+ *   auto_reconnect:            (optional) enable auto reconnection (default: true)
+ *   max_page_size:             (optional) maximum page size (default: 100)
+ *   debug:                     (optional) enable debug output (default: false).
+ * 
+ * ### References ###
+ * 
+ * - *:logger:*:*:1.0           (optional) ILogger components to pass log messages
+ * - *:discovery:*:*:1.0        (optional) IDiscovery services
+ * - *:credential-store:*:*:1.0 (optional) Credential stores to resolve credentials
+ * <p>
+ * ### Example ###
+ * <pre>
+ * {@code
+ * class MyMongoDbPersistence extends MongoDbPersistence<MyData> {
+ *    
+ *   public MyMongoDbPersistence() {
+ *       base("mydata", MyData.class);
+ *   }
+ * 
+ *   public MyData getByName(String correlationId, String name) {
+ *   	Bson filter = Filters.eq("name", name);
+ *   	MyData item = _collection.find(filter).first();
+ *   	return item;
+ *   } 
+ * 
+ *   public MyData set(String correlatonId, MyData item) {
+ *       Bson filter = Filters.eq("name", item.getName());
+ *       
+ *       FindOneAndReplaceOptions options = new FindOneAndReplaceOptions();
+ *       options.returnDocument(ReturnDocument.AFTER);
+ *       options.upsert(true);
+ *       
+ *       MyData result = _collection.findOneAndReplace(filter, item, options);
+ *       return result;
+ *   }
+ * 
+ * }
+ * 
+ * MyMongoDbPersistence persistence = new MyMongoDbPersistence();
+ * persistence.configure(ConfigParams.fromTuples(
+ *     "host", "localhost",
+ *     "port", 27017
+ * ));
+ * 
+ * persitence.open("123");
+ * MyData mydata = new MyData("ABC");
+ * persistence.set("123", mydata); 
+ * persistence.getByName("123", "ABC");
+ * System.out.println(item);                   // Result: { name: "ABC" }
+ * }
+ * </pre>
+ * 
+ */
 public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, IOpenable, ICleanable {
 
-	
 	private ConfigParams _defaultConfig = ConfigParams.fromTuples(
 //        "connection.type", "mongodb",
 //        "connection.database", "test",
@@ -28,106 +108,177 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
 //        "options.auto_reconnect", true,
 //        "options.max_page_size", 100,
 //        "options.debug", true
-    );
-	
+	);
+	/**
+	 * The collection name.
+	 */
 	protected String _collectionName;
-    protected MongoDbConnectionResolver _connectionResolver = new MongoDbConnectionResolver();
-    protected ConfigParams _options = new ConfigParams();
-    protected Object _lock = new Object();
+	/**
+	 * The connection resolver.
+	 */
+	protected MongoDbConnectionResolver _connectionResolver = new MongoDbConnectionResolver();
+	/**
+	 * The configuration options.
+	 */
+	protected ConfigParams _options = new ConfigParams();
+	protected Object _lock = new Object();
 
-    protected MongoClient _connection;
-    protected MongoDatabase _database;
-    protected MongoCollection<T> _collection;
-    protected Class<T> _documentClass;
-    
-    protected CompositeLogger _logger = new CompositeLogger();
+	/**
+	 * The MongoDB connection object.
+	 */
+	protected MongoClient _connection;
 
-    public MongoDbPersistence(String collectionName, Class<T> documentClass) {
-        if (collectionName == null)
-            throw new NullPointerException(collectionName);
+	/**
+	 * The MongoDB database name.
+	 */
+	protected MongoDatabase _database;
+	/**
+	 * The MongoDB colleciton object.
+	 */
+	protected MongoCollection<T> _collection;
+	/**
+	 * The default class to cast any documents returned from the database into
+	 */
+	protected Class<T> _documentClass;
 
-        _collectionName = collectionName;
-        _documentClass = documentClass;
-    }
-	
-    public void setReferences(IReferences references) {
-        _logger.setReferences(references);
-        _connectionResolver.setReferences(references);
-    }
+	/**
+	 * The logger.
+	 */
+	protected CompositeLogger _logger = new CompositeLogger();
 
-    public void configure(ConfigParams config) {
-        config = config.setDefaults(_defaultConfig);
+	/**
+	 * Creates a new instance of the persistence component.
+	 * 
+	 * @param collectionName    (optional) a collection name.
+	 * @param documentClass the default class to cast any documents returned from
+	 *                      the database into
+	 */
+	public MongoDbPersistence(String collectionName, Class<T> documentClass) {
+		if (collectionName == null)
+			throw new NullPointerException(collectionName);
 
-        _connectionResolver.configure(config);
+		_collectionName = collectionName;
+		_documentClass = documentClass;
+	}
 
-        _collectionName = config.getAsStringWithDefault("collection", _collectionName);
+	/**
+	 * Configures component by passing configuration parameters.
+	 * 
+	 * @param config configuration parameters to be set.
+	 */
+	public void configure(ConfigParams config) {
+		config = config.setDefaults(_defaultConfig);
 
-        _options = _options.override(config.getSection("options"));
-    }
+		_connectionResolver.configure(config);
 
-    
+		_collectionName = config.getAsStringWithDefault("collection", _collectionName);
+
+		_options = _options.override(config.getSection("options"));
+	}
+
+	/**
+	 * Sets references to dependent components.
+	 * 
+	 * @param references references to locate the component dependencies.
+	 */
+	public void setReferences(IReferences references) {
+		_logger.setReferences(references);
+		_connectionResolver.setReferences(references);
+	}
+
+	/**
+	 * Checks if the component is opened.
+	 * 
+	 * @return true if the component has been opened and false otherwise.
+	 */
 	public boolean isOpen() {
 		return _collection != null;
 	}
-	
+
+	/**
+	 * Checks if the component is opened.
+	 * 
+	 * @param correlationId (optional) transaction id to trace execution through
+	 *                      call chain.
+	 * @throws InvalidStateException when operation cannot be performed.
+	 */
 	protected void checkOpened(String correlationId) throws InvalidStateException {
 		if (!isOpen()) {
-			throw new InvalidStateException(
-				correlationId,
-				"NOT_OPENED",
-				"Operation cannot be performed because the component is closed"
-			);			
+			throw new InvalidStateException(correlationId, "NOT_OPENED",
+					"Operation cannot be performed because the component is closed");
 		}
 	}
-   
+
+	/**
+	 * Opens the component.
+	 * 
+	 * @param correlationId (optional) transaction id to trace execution through
+	 *                      call chain.
+	 * @throws ApplicationException when error occured.
+	 */
 	public void open(String correlationId) throws ApplicationException {
-        String uri = _connectionResolver.resolve(correlationId);
+		String uri = _connectionResolver.resolve(correlationId);
 
-        _logger.trace(correlationId, "Connecting to mongodb");
-        
-        try {
-        	MongoClientURI clientUri = new MongoClientURI(uri);
-        	String databaseName = clientUri.getDatabase();
-        	
-        	_connection = new MongoClient(clientUri);
+		_logger.trace(correlationId, "Connecting to mongodb");
 
-            PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-            //JacksonCodecProvider dateCodecProvider = new JacksonCodecProvider(ObjectMapperFactory.createObjectMapper());            
-            CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
-        		MongoClient.getDefaultCodecRegistry(),
-        		CodecRegistries.fromProviders(pojoCodecProvider)
-        		//CodecRegistries.fromProviders(dateCodecProvider)
-    		);
-        	_database = _connection.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+		try {
+			MongoClientURI clientUri = new MongoClientURI(uri);
+			String databaseName = clientUri.getDatabase();
 
-            _collection =  (MongoCollection<T>)_database.getCollection(_collectionName, _documentClass);
+			_connection = new MongoClient(clientUri);
+
+			PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+			// JacksonCodecProvider dateCodecProvider = new
+			// JacksonCodecProvider(ObjectMapperFactory.createObjectMapper());
+			CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+					CodecRegistries.fromProviders(pojoCodecProvider)
+			// CodecRegistries.fromProviders(dateCodecProvider)
+			);
+			_database = _connection.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+
+			_collection = (MongoCollection<T>) _database.getCollection(_collectionName, _documentClass);
 //            if (_collection == null)
 //            	_database.createCollection(_collectionName);
 //            _collection =  (MongoCollection<T>)_database.getCollection(_collectionName, _documentClass);
 
-            _logger.debug(correlationId, "Connected to mongodb database %s, collection %s", databaseName, _collectionName);
-        } catch (Exception ex) {
-        	_connection = null;
-        	
-            throw new ConnectionException(correlationId, "Connection to mongodb failed", ex.toString());
-        }
-    }
-        
+			_logger.debug(correlationId, "Connected to mongodb database %s, collection %s", databaseName,
+					_collectionName);
+		} catch (Exception ex) {
+			_connection = null;
+
+			throw new ConnectionException(correlationId, "Connection to mongodb failed", ex.toString());
+		}
+	}
+
+	/**
+	 * Closes component and frees used resources.
+	 * 
+	 * @param correlationId (optional) transaction id to trace execution through
+	 *                      call chain.
+	 * @throws ApplicationException when error occured.
+	 */
 	public void close(String correlationId) throws ApplicationException {
 		if (_connection != null) {
 			_connection.close();
-			
+
 			_connection = null;
 			_database = null;
 			_collection = null;
 		}
 	}
 
+	/**
+	 * Clears component state.
+	 * 
+	 * @param correlationId (optional) transaction id to trace execution through
+	 *                      call chain.
+	 * @throws ApplicationException when error occured.
+	 */
 	@Override
 	public void clear(String correlationId) throws ApplicationException {
 		checkOpened(correlationId);
-		
-		_collection.drop();		
+
+		_collection.drop();
 	}
 
 }
