@@ -55,8 +55,8 @@ import com.mongodb.client.result.*;
  * {@code
  * class MyMongoDbPersistence extends MongoDbPersistence<MyData, String> {
  *    
- *   public constructor() {
- *       base("mydata", MyData.class);
+ *   public MyMongoDbPersistence() {
+ *       super("mydata", MyData.class);
  *   }
  * 
  *   private Bson composeFilter(FilterParams filter) {

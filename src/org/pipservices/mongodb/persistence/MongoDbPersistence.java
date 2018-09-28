@@ -57,7 +57,7 @@ import com.mongodb.client.model.ReturnDocument;
  * class MyMongoDbPersistence extends MongoDbPersistence<MyData> {
  *    
  *   public MyMongoDbPersistence() {
- *       base("mydata", MyData.class);
+ *       super("mydata", MyData.class);
  *   }
  * 
  *   public MyData getByName(String correlationId, String name) {
