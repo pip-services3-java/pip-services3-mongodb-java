@@ -1,6 +1,7 @@
 package org.pipservices.mongodb.persistence;
 
 import java.time.*;
+import java.util.*;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.pipservices.commons.data.IStringIdentifiable;
@@ -15,6 +16,7 @@ public class Dummy implements IStringIdentifiable{
 		this._key = key;
 		this._content = content;
 		this._createTime = ZonedDateTime.now();
+		this._subObject = new SubObject("Type", Arrays.asList(new Double[] { new Double(0), new Double(0) }));
 	}
 	
 	@BsonProperty("_id")
@@ -36,4 +38,10 @@ public class Dummy implements IStringIdentifiable{
 	private ZonedDateTime _createTime;
 	public ZonedDateTime getCreateTime() { return _createTime; }
 	public void setCreateTime(ZonedDateTime createTime) { this._createTime = createTime; }
+	
+	@BsonProperty("sub_object")
+	private SubObject _subObject;
+	public SubObject getSubObject() { return _subObject; }
+	public void setSubObject(SubObject value) { _subObject = value; }
+	
 }

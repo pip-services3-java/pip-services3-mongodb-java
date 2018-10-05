@@ -2,7 +2,6 @@ package org.pipservices.mongodb.persistence;
 
 import org.bson.codecs.configuration.*;
 import org.bson.codecs.pojo.*;
-import org.bson.conversions.Bson;
 import org.pipservices.commons.config.*;
 import org.pipservices.commons.errors.*;
 import org.pipservices.components.log.*;
@@ -13,9 +12,6 @@ import org.pipservices.commons.run.*;
 
 import com.mongodb.*;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.FindOneAndReplaceOptions;
-import com.mongodb.client.model.ReturnDocument;
 
 /**
  * Abstract persistence component that stores data in MongoDB
@@ -229,7 +225,6 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
         	_connection = new MongoClient(clientUri);
 
             PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
-            //JacksonCodecProvider dateCodecProvider = new JacksonCodecProvider(ObjectMapperFactory.createObjectMapper());            
             CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(
         		// Custom codecs for unsupported types
         		CodecRegistries.fromCodecs(
@@ -241,7 +236,6 @@ public class MongoDbPersistence<T> implements IReferenceable, IReconfigurable, I
         		MongoClient.getDefaultCodecRegistry(),
         		// POJO codecs to allow object serialization
         		CodecRegistries.fromProviders(pojoCodecProvider)
-        		//CodecRegistries.fromProviders(dateCodecProvider)
     		);
         	_database = _connection.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
 
