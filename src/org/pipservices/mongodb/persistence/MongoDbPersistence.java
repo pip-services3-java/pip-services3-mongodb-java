@@ -14,39 +14,46 @@ import com.mongodb.*;
 import com.mongodb.client.*;
 
 /**
- * Abstract persistence component that stores data in MongoDB
- * and is based using Mongoose object relational mapping.
- * 
+ * Abstract persistence component that stores data in MongoDB.
+ * <p>
  * This is the most basic persistence component that is only
  * able to store data items of any type. Specific CRUD operations
  * over the data items must be implemented in child classes by
- * accessing this._collection or this._model properties.
- * 
+ * accessing <code>this._collection</code> or <code>this._model</code> properties.
+ * <p>
  * ### Configuration parameters ###
- * 
- * collection:                  (optional) MongoDB collection name
- * connection(s):    
- *   discovery_key:             (optional) a key to retrieve the connection from IDiscovery
- *   host:                      host name or IP address
- *   port:                      port number (default: 27017)
- *   uri:                       resource URI or connection string with all parameters in it
- * credential(s):    
- *   store_key:                 (optional) a key to retrieve the credentials from ICredentialStore
- *   username:                  (optional) user name
- *   password:                  (optional) user password
- * options:
- *   max_pool_size:             (optional) maximum connection pool size (default: 2)
- *   keep_alive:                (optional) enable connection keep alive (default: true)
- *   connect_timeout:           (optional) connection timeout in milliseconds (default: 5 sec)
- *   auto_reconnect:            (optional) enable auto reconnection (default: true)
- *   max_page_size:             (optional) maximum page size (default: 100)
- *   debug:                     (optional) enable debug output (default: false).
- * 
+ * <ul>
+ * <li>collection:                  (optional) MongoDB collection name
+ * <li>connection(s):    
+ *   <ul>
+ *   <li>discovery_key:             (optional) a key to retrieve the connection from <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/connect/IDiscovery.html">IDiscovery</a>
+ *   <li>host:                      host name or IP address
+ *   <li>port:                      port number (default: 27017)
+ *   <li>uri:                       resource URI or connection string with all parameters in it
+ *   </ul>
+ * <li>credential(s):    
+ *   <ul>
+ *   <li>store_key:                 (optional) a key to retrieve the credentials from <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/auth/ICredentialStore.html">ICredentialStore</a>
+ *   <li>username:                  (optional) user name
+ *   <li>password:                  (optional) user password
+ *   </ul>
+ * <li>options:
+ *   <ul>
+ *   <li>max_pool_size:             (optional) maximum connection pool size (default: 2)
+ *   <li>keep_alive:                (optional) enable connection keep alive (default: true)
+ *   <li>connect_timeout:           (optional) connection timeout in milliseconds (default: 5 sec)
+ *   <li>auto_reconnect:            (optional) enable auto reconnection (default: true)
+ *   <li>max_page_size:             (optional) maximum page size (default: 100)
+ *   <li>debug:                     (optional) enable debug output (default: false).
+ *   </ul>
+ * </ul>
+ * <p>
  * ### References ###
- * 
- * - *:logger:*:*:1.0           (optional) ILogger components to pass log messages
- * - *:discovery:*:*:1.0        (optional) IDiscovery services
- * - *:credential-store:*:*:1.0 (optional) Credential stores to resolve credentials
+ * <ul>
+ * <li>*:logger:*:*:1.0           (optional) <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/log/ILogger.html">ILogger</a> components to pass log messages
+ * <li>*:discovery:*:*:1.0        (optional) <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/connect/IDiscovery.html">IDiscovery</a> services
+ * <li>*:credential-store:*:*:1.0 (optional) Credential stores to resolve credentials
+ * </ul>
  * <p>
  * ### Example ###
  * <pre>

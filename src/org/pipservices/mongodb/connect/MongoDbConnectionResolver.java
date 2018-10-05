@@ -16,26 +16,32 @@ import org.pipservices.commons.refer.IReferences;
 /**
  * Helper class that resolves MongoDB connection and credential parameters,
  * validates them and generates a connection URI.
- * 
+ * <p>
  * It is able to process multiple connections to MongoDB cluster nodes.
- * 
+ * <p>
  *  ### Configuration parameters ###
- * 
- * connection(s):
- *   discovery_key:               (optional) a key to retrieve the connection from IDiscovery
- *   host:                        host name or IP address
- *   port:                        port number (default: 27017)
- *   database:                    database name
- *   uri:                         resource URI or connection string with all parameters in it
- * credential(s):
- *   store_key:                   (optional) a key to retrieve the credentials from ICredentialStore
- *   username:                    user name
- *   password:                    user password
- * 
+ * <ul>
+ * <li>connection(s):
+ *   <ul>
+ *   <li>discovery_key:               (optional) a key to retrieve the connection from <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/connect/IDiscovery.html">IDiscovery</a>
+ *   <li>host:                        host name or IP address
+ *   <li>port:                        port number (default: 27017)
+ *   <li>database:                    database name
+ *   <li>uri:                         resource URI or connection string with all parameters in it
+ *   </ul>
+ * <li>credential(s):
+ *   <ul>
+ *   <li>store_key:                   (optional) a key to retrieve the credentials from <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/auth/ICredentialStore.html">ICredentialStore</a>
+ *   <li>username:                    user name
+ *   <li>password:                    user password
+ *   </ul>
+ * </ul>
+ * <p>
  * ### References ###
- * 
- * - *:discovery:*:*:1.0          (optional) IDiscovery services
- * - *:credential-store:*:*:1.0   (optional) Credential stores to resolve credentials
+ * <ul>
+ * <li>*:discovery:*:*:1.0          (optional) <a href="https://raw.githubusercontent.com/pip-services-java/pip-services-components-java/master/doc/api/org/pipservices/components/connect/IDiscovery.html">IDiscovery</a> services
+ * <li>*:credential-store:*:*:1.0   (optional) Credential stores to resolve credentials
+ * </ul>
  */
 public class MongoDbConnectionResolver implements IReferenceable, IConfigurable {
 
