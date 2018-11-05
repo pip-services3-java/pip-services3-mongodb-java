@@ -9,10 +9,10 @@ This component library is a part of the Pip.Services project. It contains the fo
 
 Quick Links:
 
-* [Downloads](https://github.com/pip-services-java/pip-services-mongodb-java/blob/master/doc/Downloads.md)
-* [API Reference](http://htmlpreview.github.io/?https://github.com/pip-services-java/pip-services-mongodb-java/blob/master/doc/api/index.html)
-* [Building and Testing](https://github.com/pip-services-java/pip-services-mongodb-java/blob/master/doc/Development.md)
-* [Contributing](https://github.com/pip-services-java/pip-services-mongodb-java/blob/master/doc/Development.md/#contrib)
+* [Downloads](https://github.com/pip-services3-java/pip-services3-mongodb-java/blob/master/doc/Downloads.md)
+* [API Reference](http://htmlpreview.github.io/?https://github.com/pip-services3-java/pip-services3-mongodb-java/blob/master/doc/api/index.html)
+* [Building and Testing](https://github.com/pip-services3-java/pip-services3-mongodb-java/blob/master/doc/Development.md)
+* [Contributing](https://github.com/pip-services3-java/pip-services3-mongodb-java/blob/master/doc/Development.md/#contrib)
 
 ## Acknowledgements
 

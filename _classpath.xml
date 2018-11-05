@@ -40,6 +40,6 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="/pip-services-net"/>
+	<classpathentry kind="src" path="/pip-services3-net"/>
 	<classpathentry kind="output" path="obj/src"/>
 </classpath>
