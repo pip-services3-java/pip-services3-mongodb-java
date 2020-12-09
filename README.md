@@ -5,7 +5,7 @@ This module is a part of the [Pip.Services](http://pipservices.org) polyglot mic
 The MongoDB module simplifies how we work with Mongo databases and contains everything you need to start working with MongoDB.
 
 The module contains the following packages:
-- **Build** - contains a factory for creating MongoDB persistence components.
+- **Codecs** - contains all the default BSON codecs.
 - **Connect** - instruments for configuring connections to the database. The component receives a set of configuration parameters and uses them to generate all necessary database connection parameters.
 - **Persistence** - abstract classes for working with the database that can be used for connecting to collections and performing basic CRUD operations.
 
