@@ -23,7 +23,7 @@ import org.pipservices3.commons.refer.IReferences;
  * <ul>
  * <li>connection(s):
  *   <ul>
- *   <li>discovery_key:               (optional) a key to retrieve the connection from <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a>
+ *   <li>discovery_key:               (optional) a key to retrieve the connection from <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a>
  *   <li>host:                        host name or IP address
  *   <li>port:                        port number (default: 27017)
  *   <li>database:                    database name
@@ -31,7 +31,7 @@ import org.pipservices3.commons.refer.IReferences;
  *   </ul>
  * <li>credential(s):
  *   <ul>
- *   <li>store_key:                   (optional) a key to retrieve the credentials from <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/auth/ICredentialStore.html">ICredentialStore</a>
+ *   <li>store_key:                   (optional) a key to retrieve the credentials from <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/auth/ICredentialStore.html">ICredentialStore</a>
  *   <li>username:                    user name
  *   <li>password:                    user password
  *   </ul>
@@ -39,7 +39,7 @@ import org.pipservices3.commons.refer.IReferences;
  * <p>
  * ### References ###
  * <ul>
- * <li>*:discovery:*:*:1.0          (optional) <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a> services
+ * <li>*:discovery:*:*:1.0          (optional) <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a> services
  * <li>*:credential-store:*:*:1.0   (optional) Credential stores to resolve credentials
  * </ul>
  */

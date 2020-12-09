@@ -16,7 +16,7 @@ import com.mongodb.client.result.*;
 /**
  * Abstract persistence component that stores data in MongoDB
  * and implements a number of CRUD operations over data items with unique ids.
- * The data items must implement <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-commons-java/master/doc/api/org/pipservices3/commons/data/IIdentifiable.html">IIdentifiable</a> interface.
+ * The data items must implement <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/commons/data/IIdentifiable.html">IIdentifiable</a> interface.
  * <p>
  * In basic scenarios child classes shall only override <code>getPageByFilter()</code>,
  * <code>getListByFilter()</code> or <code>deleteByFilter()</code> operations with specific filter function.
@@ -30,14 +30,14 @@ import com.mongodb.client.result.*;
  * <li>collection:                  (optional) MongoDB collection name
  * <li>connection(s):    
  *   <ul>
- *   <li>discovery_key:             (optional) a key to retrieve the connection from <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a>
+ *   <li>discovery_key:             (optional) a key to retrieve the connection from <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a>
  *   <li>host:                      host name or IP address
  *   <li>port:                      port number (default: 27017)
  *   <li>uri:                       resource URI or connection string with all parameters in it
  *   </ul>
  * <li>credential(s):    
  *   <ul>
- *   <li>store_key:                 (optional) a key to retrieve the credentials from <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/auth/ICredentialStore.html">ICredentialStore</a>
+ *   <li>store_key:                 (optional) a key to retrieve the credentials from <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/auth/ICredentialStore.html">ICredentialStore</a>
  *   <li>username:                  (optional) user name
  *   <li>password:                  (optional) user password
  *   </ul>
@@ -54,8 +54,8 @@ import com.mongodb.client.result.*;
  * <p>
  * ### References ###
  * <ul>
- * <li>*:logger:*:*:1.0           (optional) <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/log/ILogger.html">ILogger</a> components to pass log messages
- * <li>*:discovery:*:*:1.0        (optional) <a href="https://raw.githubusercontent.com/pip-services3-java/pip-services3-components-java/master/doc/api/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a> services
+ * <li>*:logger:*:*:1.0           (optional) <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/log/ILogger.html">ILogger</a> components to pass log messages
+ * <li>*:discovery:*:*:1.0        (optional) <a href="https://pip-services3-java.github.io/pip-services3-components-java/org/pipservices3/components/connect/IDiscovery.html">IDiscovery</a> services
  * <li>*:credential-store:*:*:1.0 (optional) Credential stores to resolve credentials
  * </ul>
  * <p>
