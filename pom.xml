@@ -26,6 +26,12 @@
             <id>seroukhov</id>
         </developer>
         <developer>
+            <email>judas.priest999@gmail.com</email>
+            <name>Danil Prisiazhnyi</name>
+            <url>https://github.com/banalna</url>
+            <id>banalna</id>
+        </developer>
+        <developer>
             <email>nuzhnykhev@gmail.com</email>
             <name>Egor Nuzhnykh</name>
             <url>https://github.com/EgorNuzhnykh</url>
@@ -110,7 +116,6 @@
                 <version>3.4.0</version>
                 <configuration>
                     <reportOutputDirectory>${basedir}/docs</reportOutputDirectory>
-                    <destDir>.</destDir>
                     <additionalOptions>
                         <additionalOption>-Xdoclint:none</additionalOption>
                     </additionalOptions>
