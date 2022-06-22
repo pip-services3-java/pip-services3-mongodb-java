@@ -477,11 +477,11 @@ public class MongoDbPersistence<T> implements IReferenceable, IUnreferenceable, 
         var pagingEnabled = paging.hasTotal();
 
         // Configure options
-        var options = new BasicDBObject();
+        filter = filter != null ? filter : new Document();
 
         List<T> items = new ArrayList<>();
 
-        var res = _collection.find(options)
+        var res = _collection.find(filter)
                 .limit((int) take)
                 .skip((int) skip)
                 .sort(sort)

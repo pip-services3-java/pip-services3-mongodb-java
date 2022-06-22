@@ -1,6 +1,7 @@
 package org.pipservices3.mongodb.persistence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mongodb.client.model.IndexOptions;
@@ -35,6 +36,10 @@ public class DummyMongoDbPersistence extends IdentifiableMongoDbPersistence<Dumm
         String key = filter.getAsNullableString("key");
         if (key != null)
             filters.add(Filters.eq("key", key));
+
+        String keys = filter.getAsNullableString("keys");
+        if (keys != null)
+            filters.add(Filters.in("key", Arrays.stream(keys.split(",")).toList()));
 
         Bson filterDefinition = filters.size() > 0 ? Filters.and(filters) : null;
 

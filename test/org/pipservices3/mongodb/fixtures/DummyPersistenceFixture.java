@@ -42,6 +42,10 @@ public class DummyPersistenceFixture {
         assertNotNull(page);
         assertEquals(2, page.getData().size());
 
+        page = _persistence.getPageByFilter(null, FilterParams.fromTuples("keys", List.of("Key 2", "Key 1")), null);
+        assertNotNull(page);
+        assertEquals(2, page.getData().size());
+
         // Update the dummy
         dummy1.setContent("Updated Content 1");
         Dummy dummy = _persistence.update(null, dummy1);
